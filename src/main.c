@@ -1,0 +1,196 @@
+#include <stdio.h>
+#include <ncurses.h>
+#include <string.h>
+
+#include "hello.h"
+#include "menu.h"
+#include "const.h"
+#include "callback.h"
+
+
+struct menu_template main_menu;
+struct menu_template results_menu;
+struct menu_template edit_config_network_menu;
+struct menu_template new_network_menu;
+
+
+// global variables
+int exit_loop = 0;
+int level_up = 0;
+
+int row = 0;
+int col = 0;
+
+int main(int argc, char** argv)
+{
+	// screen dimension variables 
+	
+
+	int active_menu_index = 0;
+	struct menu_template* active_menu = &main_menu;
+  
+  // key input variable
+  int input = 0;
+  // menu cursor positioning variables
+  // given the cursor index for the "parent" menu, 
+  // I know which sub menu should be open...
+  int cursor_index = 0;
+  // 0 - main menu
+  // 1 - sub menu
+  // 2 - sub sub menu...
+  int menu_level = 0;
+  
+  int num_of_items = 0;
+
+  initscr();				/* Start curses mode */
+  
+  getmaxyx(stdscr,row,col);
+  noecho();
+  curs_set(0); // hide cursor
+  
+  fillMenu(&main_menu, 
+  				 NULL,
+
+  				 (struct menu_template*[]) {	// child menu
+  				 													NULL, 
+  																	&results_menu,
+  																  &edit_config_network_menu,
+  																  &new_network_menu,
+  																  NULL},
+  				 (void (*[])(void)){ 					// callback function pointers
+  				 													&callbackStartLearning,
+  				 													NULL,
+  				 													NULL,
+  				 													NULL,
+  				 													&callbackExit},
+
+  				 (char[][50]) {
+																	 "Start learning\0",
+																	 "Show results\0",
+																	 "Configure network\0",
+																	 "Create new network\0",
+																	 "Exit\0"}, 
+					 												 NUM_OF_ITEMS_MAIN_MENU);
+
+  
+  fillMenu(&results_menu, 
+  				 &main_menu,
+  				 (struct menu_template*[]){	// child
+  				 												 NULL, 
+  																 NULL,
+  																 NULL,
+  																 NULL},
+  				 (void (*[])(void)){ 				// callback function pointers
+  				 												 NULL,
+  				 												 NULL,
+  				 												 NULL,
+  				 												 &callbackLevelUp},
+  				 	(char[][50]) {
+																	 "Show last results\0",
+																	 "Show best model\0",
+																	 "Show last 10 results\0",
+																	 "Back\0"}, 
+																	 NUM_OF_ITEMS_RESULTS_MENU);
+
+  fillMenu(&edit_config_network_menu, 
+  				 &main_menu,
+
+  				 (struct menu_template*[]){	// child menu
+  				 												 NULL, 
+  																 NULL,
+  																 NULL,
+  																 NULL},
+  				 (void (*[])(void)){ 				// callback function pointers
+  				 												 NULL,
+  				 												 NULL,
+  				 												 NULL,
+  				 												 &callbackLevelUp},
+  				 	(char[][50]) {
+																	 "Load last network\0",
+																	 "Load network\0",
+																	 "Load from file (ToDo)\0",
+																	 "Back\0"}, 
+																	 NUM_OF_ITEMS_EDIT_CONFIG_MENU);
+
+  fillMenu(&new_network_menu, 
+  				 &main_menu,
+
+  				 (struct menu_template*[]){	// child menu
+  				 												 NULL, 
+  																 NULL,
+  																 NULL},
+  				 (void (*[])(void)){ 				// callback function pointers
+  				 												 &callbackNewNetworkScratch,
+  				 												 &callbackNewNetworkTemplate,
+  				 												 &callbackLevelUp},
+  				 	(char[][50]) {
+																	 "Create new network (from scratch)\0",
+																	 "Create new network (from existing)\0",
+																	 "Back\0"}, 
+																	 NUM_OF_ITEMS_NEW_MENU);
+
+
+  // main_menu.items[1]->child_menu = &results_menu;
+
+  num_of_items = active_menu->num_of_items;
+  printMenu(active_menu);
+
+  while(1)
+  {
+  	refresh();
+  	input = getch();
+	  
+  	if (input == 66) // arrow key down
+  	{	
+  		cursor_index = ++cursor_index < num_of_items ? cursor_index++ : 0;
+  		active_menu->cursor_index = cursor_index;
+  	}
+  	else if (input == 65) // arrow key up
+  	{
+	  	cursor_index = --cursor_index >= 0 ? cursor_index-- : num_of_items - 1;
+	  	active_menu->cursor_index = cursor_index;
+  	}
+  	else if (input == 10) // enter
+  	{
+  		if (active_menu->items[cursor_index]->child_menu != NULL)
+  		{
+  			active_menu = active_menu->items[cursor_index]->child_menu;
+  			num_of_items = active_menu->num_of_items;
+  			cursor_index = 0;
+  		} else
+  		{
+  			mvprintw(0, 1, " No submenu! Checking for a callback function! \n\r");
+  			if (active_menu->items[cursor_index]->callback != NULL)
+  			{
+  				mvprintw(1, 1, " There is a callback!\n\r ");
+  				// do the callback function call
+  				active_menu->items[cursor_index]->callback();
+
+  			} else
+  			{
+  				mvprintw(1, 1, " Well fuck it, no submenu or callback! \n\r");
+  			}
+  		}
+			}
+		
+		if (level_up == 1)
+		{
+			active_menu = active_menu->items[cursor_index]->parent_menu;
+			num_of_items = active_menu->num_of_items;
+  		cursor_index = active_menu->cursor_index;
+			level_up = 0;
+		}
+
+  	if (input == 'q')
+  		exit_loop = 1;
+
+  	if (exit_loop == 1)
+  		break;
+  	
+  	printMenu(active_menu);
+  }
+
+  endwin();                       	/* End curses mode */
+  
+  return 0;
+}
