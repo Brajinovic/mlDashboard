@@ -1,4 +1,5 @@
 Requirements:
-	- ncurses
+	- ncurses.h
 	- gcc
 	- make
+	- time.h

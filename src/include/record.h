@@ -3,7 +3,7 @@
 
 #include <ncurses.h>
 #include "menu.h"
-
+#include <time.h>
 
 extern int row;
 extern int col;
@@ -30,6 +30,6 @@ void refreshMenu(struct menu_template*, struct learning_parameter_record*);
 Write learning parameters to file. This should occur right before you exit the 
 network config menu. Use the current time as an uID for the configuration.
 */
-void printToFile(struct learning_parameter_record*);
+void writeConfig(struct learning_parameter_record* parameters);
 
 #endif

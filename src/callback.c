@@ -1,7 +1,4 @@
-#include "menu.h"
-#include "nnetwork.h"
 #include "callback.h"
-#include "record.h"
 
 
 struct learning_parameter_record parameters;
@@ -11,40 +8,6 @@ void callbackStartLearning(void)
 	// what to do? Start the python script that will load the config from file...
 	exit_loop = 1;
 }
-
-/*
-void callbackNewNetwork(void)
-{
-	// what to do? create a new network
-	// 			   what this does is it opens a new window through which everything is configured
-	
-		This means I have to create a new window/menu. It would be amazing if I can make it so each value field
-		is represented with an item. So I can add/remove items representing layers and other shit. At the end I have
-		the option to "write new configuration" which will actually create the requreid structures and write the config
-		to the file.
-
-		For multiple choice like activation function: new menu opens, items are all options regarding the activation function
-													  uppon selecting the item, you are returned to the parent menu; the index of
-													  the child index is used to know which option was selected.
-	
-
-		0. Input name of new network
-		1. Create structure n_network
-
-		2. create first and last layers as they are static
-		3. enable the user to modify the layers in between
-			To do this, create a new menu containing:
-				- layer class				-> multiple choice
-				- neuron count 				-> int input
-				- activation function		-> multiple choice
-	
-
-	
-
-
-	exit_loop = 1;
-}
-*/
 
 
 void callbackNewNetworkScratch(void)
@@ -86,13 +49,13 @@ void callbackNewNetworkScratch(void)
 			  (char[][50]) {
 							 "Model:                 Sequential (default)\0",
 							 "Application:           VGG16 (default)\0",
-							 "Min layer count:       8 (default)\0",
-							 "Max layer count:       32 (default)\0",
+							 "Min layer count:       2 (default)\0",
+							 "Max layer count:       8 (default)\0",
 							 "Min neuron count:      16 (default)\0",
 							 "Max neuron count:      128 (default)\0",
 							 "Min epoch size:        100 (default)\0",
 							 "Max epoch size:        1000 (default)\0",
-							 "Min batch size:        20 (default)\0",
+							 "Min batch size:        10 (default)\0",
 							 "Max batch size:        100 (default)\0",
 							 "Activation function/s: Relu (default)\0",
 							 "Back\0",
@@ -233,6 +196,7 @@ void callbackNewNetworkScratch(void)
 	  	if (exit_loop == 1)
 	  	{
 	  		exit_loop = 0;
+	  		writeConfig(&parameters);
 	  		break;
 	  	}
 

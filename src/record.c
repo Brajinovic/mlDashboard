@@ -55,3 +55,38 @@ void refreshMenu(struct menu_template* menu, struct learning_parameter_record* p
 }
 
 // create a new menu related to the selected activation functions?
+
+void writeConfig(struct learning_parameter_record* parameters)
+{
+	FILE* fptr;
+
+    fptr = fopen("file.txt", "a+");
+
+    if (fptr == NULL) 
+        printf("The file is not opened.");
+    else
+    {
+    	fprintf(fptr, "ID: %ld\n"
+    			   "\tminLayerCount: \t\t\t%d\n"
+    			   "\tmaxLayerCount: \t\t\t%d\n"
+    			   "\tminNeuronCount: \t\t%d\n"
+    			   "\tmaxNeuronCount: \t\t%d\n"
+    			   "\tminEpochSize: \t\t\t%d\n"
+    			   "\tmaxEpochSize: \t\t\t%d\n"
+    			   "\tminBatchSize: \t\t\t%d\n"
+    			   "\tmaxBatchSize: \t\t\t%d\n"
+    			   "\tactivationFunction(s): \t%d\n\n",
+    			   time(0),
+    			   parameters->minLayerCount == 0 ? 2 : parameters->minLayerCount,
+    			   parameters->maxLayerCount == 0 ? 8 : parameters->maxLayerCount,
+    			   parameters->minNeuronCount == 0 ? 16 : parameters->minNeuronCount,
+    			   parameters->maxNeuronCount == 0 ? 128 : parameters->maxNeuronCount,
+    			   parameters->minEpochSize == 0 ? 100 : parameters->minEpochSize,
+    			   parameters->maxEpochSize == 0 ? 1000 : parameters->maxEpochSize,
+    			   parameters->minBatchSize == 0 ? 10 : parameters->minBatchSize,
+    			   parameters->maxBatchSize == 0 ? 100 : parameters->maxBatchSize,
+    			   parameters->activationFunction == 0 ? 1 : parameters->activationFunction);
+
+    	fclose(fptr);
+    }
+}

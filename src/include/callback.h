@@ -2,7 +2,6 @@
 #define CALLBACK_H
 
 #include "menu.h"
-#include "nnetwork.h"
 #include "record.h"
 
 extern int row;
