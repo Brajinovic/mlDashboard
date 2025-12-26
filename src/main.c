@@ -4,14 +4,14 @@
 
 #include "hello.h"
 #include "menu.h"
+#include "record.h"
 #include "const.h"
 #include "callback.h"
 
 
 struct menu_template main_menu;
 struct menu_template results_menu;
-struct menu_template edit_config_network_menu;
-struct menu_template new_network_menu;
+struct learning_parameter_record active_config;
 
 
 // global variables
@@ -31,15 +31,9 @@ int main(int argc, char** argv)
   
   // key input variable
   int input = 0;
-  // menu cursor positioning variables
-  // given the cursor index for the "parent" menu, 
-  // I know which sub menu should be open...
+
   int cursor_index = 0;
-  // 0 - main menu
-  // 1 - sub menu
-  // 2 - sub sub menu...
-  int menu_level = 0;
-  
+    
   int num_of_items = 0;
 
   initscr();				/* Start curses mode */
@@ -49,28 +43,28 @@ int main(int argc, char** argv)
   curs_set(0); // hide cursor
   
   fillMenu(&main_menu, 
-  				 NULL,
+  				 NULL,	// parent menu
 
   				 (struct menu_template*[]) {	// child menu
-  				 													NULL, 
-  																	&results_menu,
-  																  &edit_config_network_menu,
-  																  &new_network_menu,
-  																  NULL},
+  				 									NULL, 
+  													&results_menu,
+  													NULL,
+  													NULL,
+  													NULL},
   				 (void (*[])(void)){ 					// callback function pointers
-  				 													&callbackStartLearning,
-  				 													NULL,
-  				 													NULL,
-  				 													NULL,
-  				 													&callbackExit},
+ 													&callbackStartLearning,
+ 													NULL,
+ 													&callbackBrowseConfigs,
+ 													&callbackNewNetworkScratch,
+ 													&callbackExit},
 
   				 (char[][50]) {
-																	 "Start learning\0",
-																	 "Show results\0",
-																	 "Configure network\0",
-																	 "Create new network\0",
-																	 "Exit\0"}, 
-					 												 NUM_OF_ITEMS_MAIN_MENU);
+													"Start learning\0",
+													"Show results\0",
+													"Browse configs\0",
+													"Create new config\0",
+													"Exit\0"}, 
+	 												NUM_OF_ITEMS_MAIN_MENU);
 
   
   fillMenu(&results_menu, 
@@ -92,42 +86,7 @@ int main(int argc, char** argv)
 																	 "Back\0"}, 
 																	 NUM_OF_ITEMS_RESULTS_MENU);
 
-  fillMenu(&edit_config_network_menu, 
-  				 &main_menu,
 
-  				 (struct menu_template*[]){	// child menu
-  				 												 NULL, 
-  																 NULL,
-  																 NULL,
-  																 NULL},
-  				 (void (*[])(void)){ 				// callback function pointers
-  				 												 NULL,
-  				 												 NULL,
-  				 												 NULL,
-  				 												 &callbackLevelUp},
-  				 	(char[][50]) {
-																	 "Load last network\0",
-																	 "Load network\0",
-																	 "Load from file (ToDo)\0",
-																	 "Back\0"}, 
-																	 NUM_OF_ITEMS_EDIT_CONFIG_MENU);
-
-  fillMenu(&new_network_menu, 
-  				 &main_menu,
-
-  				 (struct menu_template*[]){	// child menu
-  				 												 NULL, 
-  																 NULL,
-  																 NULL},
-  				 (void (*[])(void)){ 				// callback function pointers
-  				 												 &callbackNewNetworkScratch,
-  				 												 &callbackNewNetworkTemplate,
-  				 												 &callbackLevelUp},
-  				 	(char[][50]) {
-																	 "Create new network (from scratch)\0",
-																	 "Create new network (from existing)\0",
-																	 "Back\0"}, 
-																	 NUM_OF_ITEMS_NEW_MENU);
 
 
   // main_menu.items[1]->child_menu = &results_menu;
@@ -188,6 +147,9 @@ int main(int argc, char** argv)
   		break;
   	
   	printMenu(active_menu);
+  	
+  	if (active_config.id != 0)
+  		printConfig(2, &active_config);
   }
 
   endwin();                       	/* End curses mode */

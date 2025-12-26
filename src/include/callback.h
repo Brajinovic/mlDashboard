@@ -7,11 +7,17 @@
 extern int row;
 extern int col;
 
+extern struct learning_parameter_record active_config;
+
 void callbackStartLearning(void);
 
-void callbackNewNetworkScratch(void);
-void callbackNewNetworkTemplate(void);
+/*
+edit network config
+*/
 
+void callbackNewNetworkScratch(void);
+
+void callbackBrowseConfigs(void);
 /*
 new network config
 */

@@ -1,0 +1,110 @@
+ID: 1766695396
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766695494
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766695516
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766702174
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766750570
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766750628
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766759885
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+
+ID: 1766770840
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	13653
+
+ID: 1766771297
+	minLayerCount: 			4
+	maxLayerCount: 			8
+	minNeuronCount: 		32
+	maxNeuronCount: 		256
+	minEpochSize: 			100
+	maxEpochSize: 			300
+	minBatchSize: 			20
+	maxBatchSize: 			40
+	activationFunction(s): 	4186
+
+ID: 1766771376
+	minLayerCount: 			2
+	maxLayerCount: 			8
+	minNeuronCount: 		16
+	maxNeuronCount: 		128
+	minEpochSize: 			100
+	maxEpochSize: 			1000
+	minBatchSize: 			10
+	maxBatchSize: 			100
+	activationFunction(s): 	1
+

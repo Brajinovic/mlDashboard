@@ -62,7 +62,7 @@ void callbackNewNetworkScratch(void)
 							}, 
 									 NUM_OF_ITEMS_CONFIG_MENU);
 
-	fillMenu( &activation_function_menu, 
+	fillMenu( &activation_function_menu,
     	   	  &network_config_menu, // parent menu
 
 			  (struct menu_template*[]){	// child menu 
@@ -167,7 +167,7 @@ void callbackNewNetworkScratch(void)
 	  				mvprintw(1, 1, " There is a callback!\n\r ");
 	  				// do the callback function call
 	  				active_menu->items[cursor_index]->callback();
-	  				// if the 
+
 	  				if (active_menu == &activation_function_menu && cursor_index != (num_of_items - 1))
 	  					active_menu->items[cursor_index]->name[1] = active_menu->items[cursor_index]->name[1] == 'x' ? ' ' : 'x';
 
@@ -204,6 +204,91 @@ void callbackNewNetworkScratch(void)
 	  	printSelectedActivationFunctions(&activation_function_menu);
 	}
 	
+}
+
+/*
+What should this callback function do?
+
+I want it to show a list of existing configurations inside of the file.txt file. Only the IDs should be displayed. When a particular item is selected, on the top left or senter should the entire configuration be displayed. 
+
+[ ] create a helper function that is going to create a menu representing a list from the config file.
+*/
+
+void callbackBrowseConfigs(void)
+{
+
+	struct menu_template config_list;
+	struct learning_parameter_record temp_config;
+	FILE* fptr = fopen("file.txt", "a+");
+	fseek(fptr, 0, SEEK_SET);
+	fillList(fptr, &config_list);
+	
+	int active_menu_index = 0;
+	struct menu_template* active_menu = &config_list;
+	  
+	// key input variable
+	int input = 0;
+	
+	int cursor_index = 0;
+	  
+	int num_of_items = active_menu->num_of_items;
+
+	
+	clear();
+	printMenu(active_menu);
+
+  	fseek(fptr, cursor_index * 218, SEEK_SET);
+  	readConfig(fptr, &temp_config);
+  	printConfig(2, &temp_config);
+	mvprintw(2, 2, "Current config: ");
+
+	while (1)
+	{
+	  	refresh();
+	  	input = getch();
+	
+	  	if (input == 66) // arrow key down
+	  	{	
+	  		cursor_index = ++cursor_index < num_of_items ? cursor_index++ : 0;
+	  		active_menu->cursor_index = cursor_index;
+	  		
+	  	}
+	  	else if (input == 65) // arrow key up
+	  	{
+		  	cursor_index = --cursor_index >= 0 ? cursor_index-- : num_of_items - 1;
+		  	active_menu->cursor_index = cursor_index;
+
+	  	}
+	  	else if (input == 10) // enter
+	  	{
+	  		// set active configuration
+	  		fseek(fptr, cursor_index * 218, SEEK_SET);
+	  		readConfig(fptr, &active_config);
+	  		exit_loop = 1;
+		}
+			
+		if (level_up == 1)
+		{
+			active_menu = active_menu->items[cursor_index]->parent_menu;
+			num_of_items = active_menu->num_of_items;
+  			cursor_index = active_menu->cursor_index;
+			level_up = 0;
+		}
+
+
+	  	if (exit_loop == 1)
+	  	{
+	  		exit_loop = 0;
+	  		break;
+	  	}
+
+	  	printMenu(active_menu);
+	  	fseek(fptr, cursor_index * 218, SEEK_SET);
+	  	readConfig(fptr, &temp_config);
+	  	printConfig(2, &temp_config);
+	  	mvprintw(2, 2, "Current config: ");
+	  	
+	}
 }
 
 /*
@@ -353,61 +438,70 @@ void callbackCelu(void)
 
 void callbackGlu(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x000F;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0010;
 } 
 
 
 void callbackGelu(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0010;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0020;
 }
 
 
 void callbackSigmoid(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0020;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0040;
 } 
 
 
 void callbackSoftmax(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0040;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0080;
 }
 
 
 void callbackSoftplus(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0080;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0100;
 }
 
 
 void callbackSoftSign(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x00F0;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0200;
 }
 
 
 void callbackTanh(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0100;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0400;
 }
 
 
 void callbackExponential(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0200;
+	parameters.activationFunction = parameters.activationFunction ^ 0x0800;
 } 
 
 
 void callbackLinear(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0400;
+	parameters.activationFunction = parameters.activationFunction ^ 0x1000;
 }
 
 
 void callbackLogSigmoid(void)
 {
-	parameters.activationFunction = parameters.activationFunction ^ 0x0800;
+	parameters.activationFunction = parameters.activationFunction ^ 0x2000;
 } 
 
 
+
+void callbackLoadConfigFile(void)
+{
+	FILE* fptr;
+	fptr = fopen("file.txt", "r+");
+
+	readConfig(fptr, &parameters);
+
+}

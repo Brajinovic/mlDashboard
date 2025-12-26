@@ -59,7 +59,7 @@ void fillMenu(struct menu_template* menu,
 		// I need to add the address of each item to that array
 		menu->items[i] = item;
 		if (i == 0)	mvprintw(2, 1, " %s hihi\n\r", menu->items[i]->name);
-	}	
+	}
 }
 
 
@@ -114,4 +114,49 @@ void userInput(char* display_text, char* input)
   			 " %s ", 
   			 display_text);
 	getUserInput(input);
+}
+
+
+void fillList(FILE* fptr, struct menu_template* config_list)
+{
+
+	struct menu_item* item;
+	long int id;
+	char str[20];
+	
+	config_list->cursor_index = 0;
+	config_list->num_of_items = 0;
+	config_list->items = NULL;
+	// in order to use the already written code and work around the fact that I don't know how many configs i.e. menu items there are going to be, I can allocate some memory in the beginning, and free it and reallocate if I need more of it. It is a really stupid and inefficient idea, but I am not paid to implement a linked list. Mby in the future :)
+	
+	while(fscanf(fptr, "%*s %ld", &id) == 1)
+	{
+		config_list->num_of_items++;
+
+        struct menu_item **tmp = realloc(
+            config_list->items,
+            config_list->num_of_items * sizeof *config_list->items
+        );
+
+        if (!tmp) {
+            perror("realloc");
+            exit(1);
+        }
+
+        config_list->items = tmp;
+
+        struct menu_item* item = calloc(1, sizeof *item);
+
+        snprintf(str, sizeof str, "%ld", id);
+
+        createItem(str, NULL, NULL, NULL, item);
+
+        config_list->items[config_list->num_of_items - 1] = item;
+
+
+		fseek(fptr, config_list->num_of_items * 218, SEEK_SET);
+
+
+	}
+
 }

@@ -90,3 +90,69 @@ void writeConfig(struct learning_parameter_record* parameters)
     	fclose(fptr);
     }
 }
+
+
+void readConfig(FILE* fptr, struct learning_parameter_record* parameters)
+{
+	long int id;
+   
+    if (fptr == NULL) 
+    {
+        printf("The file is not opened.");
+    	mvprintw(2, 0, "Sth is fucked!");
+    	getch();
+    }
+    else
+    {
+    	fscanf(fptr, "%*s %ld", &(parameters->id));
+    	fscanf(fptr, "%*s %d", &(parameters->minLayerCount));
+    	fscanf(fptr, "%*s %d", &(parameters->maxLayerCount));
+    	fscanf(fptr, "%*s %d", &(parameters->minNeuronCount));
+    	fscanf(fptr, "%*s %d", &(parameters->maxNeuronCount));
+    	fscanf(fptr, "%*s %d", &(parameters->minEpochSize));
+    	fscanf(fptr, "%*s %d", &(parameters->maxEpochSize));
+    	fscanf(fptr, "%*s %d", &(parameters->minBatchSize));
+    	fscanf(fptr, "%*s %d", &(parameters->maxBatchSize));
+    	fscanf(fptr, "%*s %d", &(parameters->activationFunction));
+
+    }
+}
+
+
+void printConfig(int column, struct learning_parameter_record* config)
+{
+	mvprintw(2, column, "Active config: ");
+	mvprintw(3, column + 5, "ID: \t\t\t%ld", config->id);
+	mvprintw(4, column + 5, "minLayerCount:  \t\t%d", config->minLayerCount);
+	mvprintw(5, column + 5, "maxLayerCount:  \t\t%d", config->maxLayerCount);
+	mvprintw(6, column + 5, "minNeuronCount: \t\t%d", config->minNeuronCount);
+	mvprintw(7, column + 5, "maxNeuronCount: \t\t%d", config->maxNeuronCount);
+	mvprintw(8, column + 5, "minEpochSize:  \t\t%d", config->minEpochSize);
+	mvprintw(9, column + 5, "maxEpochSize:  \t\t%d", config->maxEpochSize);
+	mvprintw(10, column + 5, "minBatchSize: \t\t%d", config->minBatchSize);
+	mvprintw(11, column + 5, "maxBatchSize: \t\t%d", config->maxBatchSize);
+	mvprintw(12, column + 5, "activationFunction: \t\t%d", config->activationFunction);
+
+	printActivationFunctions(column, config->activationFunction);
+	
+}
+
+void printActivationFunctions(int column, int activationFunction)
+{
+	// mvprintw(13, column, "Activation functions: ");
+	mvprintw(13, column + 5, "[%c] Relu", activationFunction & 0x0001 ? 'x' : ' ');
+	mvprintw(14, column + 5, "[%c] Selu", activationFunction & 0x0002 ? 'x' : ' ');
+	mvprintw(15, column + 5, "[%c] Elu", activationFunction & 0x0004 ? 'x' : ' ');
+	mvprintw(16, column + 5, "[%c] Celu", activationFunction & 0x0008? 'x' : ' ');
+	mvprintw(17, column + 5, "[%c] Glu", activationFunction & 0x0010 ? 'x' : ' ');
+	mvprintw(18, column + 5, "[%c] Gelu", activationFunction & 0x0020 ? 'x' : ' ');
+	mvprintw(19, column + 5, "[%c] Sigmoid", activationFunction & 0x0040 ? 'x' : ' ');
+	mvprintw(20, column + 5, "[%c] Softmax", activationFunction & 0x0080 ? 'x' : ' ');
+	mvprintw(21, column + 5, "[%c] Softplus", activationFunction & 0x0100 ? 'x' : ' ');
+	mvprintw(22, column + 5, "[%c] Softsign", activationFunction & 0x0200 ? 'x' : ' ');
+	mvprintw(23, column + 5, "[%c] Tanh", activationFunction & 0x0400 ? 'x' : ' ');
+	mvprintw(24, column + 5, "[%c] Exponential", activationFunction & 0x0800 ? 'x' : ' ');
+	mvprintw(25, column + 5, "[%c] Linear", activationFunction & 0x1000 ? 'x' : ' ');
+	mvprintw(26, column + 5, "[%c] LogSigmoid", activationFunction & 0x2000 ? 'x' : ' ');
+	
+}
