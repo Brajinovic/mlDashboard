@@ -88,6 +88,5 @@ void userInput(char* display_text, char* input);
 
 void getUserInput(char* name);
 
-void fillList(FILE*, struct menu_template*);
 
 #endif

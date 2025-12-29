@@ -219,7 +219,7 @@ void callbackBrowseConfigs(void)
 
 	struct menu_template config_list;
 	struct learning_parameter_record temp_config;
-	FILE* fptr = fopen("file.txt", "a+");
+	FILE* fptr = fopen("file.txt", "ab+");
 	fseek(fptr, 0, SEEK_SET);
 	fillList(fptr, &config_list);
 	
@@ -237,11 +237,11 @@ void callbackBrowseConfigs(void)
 	clear();
 	printMenu(active_menu);
 
-  	fseek(fptr, cursor_index * 218, SEEK_SET);
+  	fseek(fptr, cursor_index * RECORD_OFFSET, SEEK_SET);
   	readConfig(fptr, &temp_config);
   	printConfig(2, &temp_config);
 	mvprintw(2, 2, "Current config: ");
-
+	getch();
 	while (1)
 	{
 	  	refresh();
@@ -262,7 +262,7 @@ void callbackBrowseConfigs(void)
 	  	else if (input == 10) // enter
 	  	{
 	  		// set active configuration
-	  		fseek(fptr, cursor_index * 218, SEEK_SET);
+	  		fseek(fptr, cursor_index * RECORD_OFFSET, SEEK_SET);
 	  		readConfig(fptr, &active_config);
 	  		exit_loop = 1;
 		}
@@ -283,7 +283,7 @@ void callbackBrowseConfigs(void)
 	  	}
 
 	  	printMenu(active_menu);
-	  	fseek(fptr, cursor_index * 218, SEEK_SET);
+	  	fseek(fptr, cursor_index * RECORD_OFFSET, SEEK_SET);
 	  	readConfig(fptr, &temp_config);
 	  	printConfig(2, &temp_config);
 	  	mvprintw(2, 2, "Current config: ");

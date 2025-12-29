@@ -12,4 +12,6 @@
 #define PARAMETER_VALUE_OFFSET 23
 #define NUM_OF_MENUS 2
 
+#define RECORD_OFFSET (sizeof(struct learning_parameter_record))
+
 #endif

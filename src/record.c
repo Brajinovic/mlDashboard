@@ -60,32 +60,14 @@ void writeConfig(struct learning_parameter_record* parameters)
 {
 	FILE* fptr;
 
-    fptr = fopen("file.txt", "a+");
+    fptr = fopen("file.txt", "ab");
 
     if (fptr == NULL) 
         printf("The file is not opened.");
     else
     {
-    	fprintf(fptr, "ID: %ld\n"
-    			   "\tminLayerCount: \t\t\t%d\n"
-    			   "\tmaxLayerCount: \t\t\t%d\n"
-    			   "\tminNeuronCount: \t\t%d\n"
-    			   "\tmaxNeuronCount: \t\t%d\n"
-    			   "\tminEpochSize: \t\t\t%d\n"
-    			   "\tmaxEpochSize: \t\t\t%d\n"
-    			   "\tminBatchSize: \t\t\t%d\n"
-    			   "\tmaxBatchSize: \t\t\t%d\n"
-    			   "\tactivationFunction(s): \t%d\n\n",
-    			   time(0),
-    			   parameters->minLayerCount == 0 ? 2 : parameters->minLayerCount,
-    			   parameters->maxLayerCount == 0 ? 8 : parameters->maxLayerCount,
-    			   parameters->minNeuronCount == 0 ? 16 : parameters->minNeuronCount,
-    			   parameters->maxNeuronCount == 0 ? 128 : parameters->maxNeuronCount,
-    			   parameters->minEpochSize == 0 ? 100 : parameters->minEpochSize,
-    			   parameters->maxEpochSize == 0 ? 1000 : parameters->maxEpochSize,
-    			   parameters->minBatchSize == 0 ? 10 : parameters->minBatchSize,
-    			   parameters->maxBatchSize == 0 ? 100 : parameters->maxBatchSize,
-    			   parameters->activationFunction == 0 ? 1 : parameters->activationFunction);
+    	parameters->id = time(0);
+    	fwrite(parameters, RECORD_OFFSET, 1, fptr);
 
     	fclose(fptr);
     }
@@ -104,17 +86,8 @@ void readConfig(FILE* fptr, struct learning_parameter_record* parameters)
     }
     else
     {
-    	fscanf(fptr, "%*s %ld", &(parameters->id));
-    	fscanf(fptr, "%*s %d", &(parameters->minLayerCount));
-    	fscanf(fptr, "%*s %d", &(parameters->maxLayerCount));
-    	fscanf(fptr, "%*s %d", &(parameters->minNeuronCount));
-    	fscanf(fptr, "%*s %d", &(parameters->maxNeuronCount));
-    	fscanf(fptr, "%*s %d", &(parameters->minEpochSize));
-    	fscanf(fptr, "%*s %d", &(parameters->maxEpochSize));
-    	fscanf(fptr, "%*s %d", &(parameters->minBatchSize));
-    	fscanf(fptr, "%*s %d", &(parameters->maxBatchSize));
-    	fscanf(fptr, "%*s %d", &(parameters->activationFunction));
-
+    	fread(parameters, RECORD_OFFSET, 1, fptr);
+    	// fclose(fptr);
     }
 }
 
@@ -155,4 +128,51 @@ void printActivationFunctions(int column, int activationFunction)
 	mvprintw(25, column + 5, "[%c] Linear", activationFunction & 0x1000 ? 'x' : ' ');
 	mvprintw(26, column + 5, "[%c] LogSigmoid", activationFunction & 0x2000 ? 'x' : ' ');
 	
+}
+
+void fillList(FILE* fptr, struct menu_template* config_list)
+{
+
+	struct menu_item* item;
+	uint64_t id;
+	struct learning_parameter_record param;
+	char str[20];
+	
+	config_list->cursor_index = 0;
+	config_list->num_of_items = 0;
+	config_list->items = NULL;
+	// in order to use the already written code and work around the fact that I don't know how many configs i.e. menu items there are going to be, I can allocate some memory in the beginning, and free it and reallocate if I need more of it. It is a really stupid and inefficient idea, but I am not paid to implement a linked list. Mby in the future :)
+	fseek(fptr, 0, SEEK_SET);
+	while(fread(&param, RECORD_OFFSET, 1, fptr))
+	{
+		config_list->num_of_items++;
+		
+		
+		
+        struct menu_item **tmp = realloc(
+            config_list->items,
+            config_list->num_of_items * sizeof *config_list->items
+        );
+
+        if (!tmp) {
+            perror("realloc");
+            exit(1);
+        }
+
+        config_list->items = tmp;
+
+        struct menu_item* item = calloc(1, sizeof *item);
+
+        snprintf(str, sizeof str, "%ld", param.id);
+
+        createItem(str, NULL, NULL, NULL, item);
+
+        config_list->items[config_list->num_of_items - 1] = item;
+
+
+		fseek(fptr, config_list->num_of_items * RECORD_OFFSET, SEEK_SET);
+
+
+	}
+
 }
