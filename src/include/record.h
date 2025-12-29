@@ -12,16 +12,17 @@ extern int col;
 struct learning_parameter_record
 {
 	uint64_t id;
+	// ohe
 	uint32_t activationFunction;
-	uint8_t minLayerCount;
-	uint8_t maxLayerCount;
-	uint8_t minNeuronCount;
-	uint8_t maxNeuronCount;
-	uint8_t minEpochSize;
-	uint8_t maxEpochSize;
-	uint8_t minBatchSize;
-	uint8_t maxBatchSize;
-	// use OHE
+	uint16_t minLayerCount;
+	uint16_t maxLayerCount;
+	uint16_t minNeuronCount;
+	uint16_t maxNeuronCount;
+	uint16_t minEpochSize;
+	uint16_t maxEpochSize;
+	uint16_t minBatchSize;
+	uint16_t maxBatchSize;
+	
 
 };
 

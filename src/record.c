@@ -67,6 +67,16 @@ void writeConfig(struct learning_parameter_record* parameters)
     else
     {
     	parameters->id = time(0);
+    	parameters->activationFunction = parameters->activationFunction > 0 ? parameters->activationFunction : 1;
+    	parameters->minLayerCount = parameters->minLayerCount > 0 ? parameters->minLayerCount : 2;
+    	parameters->maxLayerCount = parameters->maxLayerCount > 0 ? parameters->maxLayerCount : 8;
+    	parameters->minNeuronCount = parameters->minNeuronCount > 0 ? parameters->minNeuronCount : 16;
+    	parameters->maxNeuronCount = parameters->maxNeuronCount > 0 ? parameters->maxNeuronCount : 128;
+    	parameters->minEpochSize = parameters->minEpochSize > 0 ? parameters->minEpochSize : 10;
+    	parameters->maxEpochSize = parameters->maxEpochSize > 0 ? parameters->maxEpochSize : 1000;
+    	parameters->minBatchSize = parameters->minBatchSize > 0 ? parameters->minBatchSize : 10;
+    	parameters->maxBatchSize = parameters->maxBatchSize > 0 ? parameters->maxBatchSize : 100;
+    	
     	fwrite(parameters, RECORD_OFFSET, 1, fptr);
 
     	fclose(fptr);
@@ -96,14 +106,14 @@ void printConfig(int column, struct learning_parameter_record* config)
 {
 	mvprintw(2, column, "Active config: ");
 	mvprintw(3, column + 5, "ID: \t\t\t%ld", config->id);
-	mvprintw(4, column + 5, "minLayerCount:  \t\t%d", config->minLayerCount);
-	mvprintw(5, column + 5, "maxLayerCount:  \t\t%d", config->maxLayerCount);
-	mvprintw(6, column + 5, "minNeuronCount: \t\t%d", config->minNeuronCount);
-	mvprintw(7, column + 5, "maxNeuronCount: \t\t%d", config->maxNeuronCount);
-	mvprintw(8, column + 5, "minEpochSize:  \t\t%d", config->minEpochSize);
-	mvprintw(9, column + 5, "maxEpochSize:  \t\t%d", config->maxEpochSize);
-	mvprintw(10, column + 5, "minBatchSize: \t\t%d", config->minBatchSize);
-	mvprintw(11, column + 5, "maxBatchSize: \t\t%d", config->maxBatchSize);
+	mvprintw(4, column + 5, "minLayerCount:  \t\t%hu", config->minLayerCount);
+	mvprintw(5, column + 5, "maxLayerCount:  \t\t%hu", config->maxLayerCount);
+	mvprintw(6, column + 5, "minNeuronCount: \t\t%hu", config->minNeuronCount);
+	mvprintw(7, column + 5, "maxNeuronCount: \t\t%hu", config->maxNeuronCount);
+	mvprintw(8, column + 5, "minEpochSize:  \t\t%hu", config->minEpochSize);
+	mvprintw(9, column + 5, "maxEpochSize:  \t\t%hu", config->maxEpochSize);
+	mvprintw(10, column + 5, "minBatchSize: \t\t%hu", config->minBatchSize);
+	mvprintw(11, column + 5, "maxBatchSize: \t\t%hu", config->maxBatchSize);
 	mvprintw(12, column + 5, "activationFunction: \t\t%d", config->activationFunction);
 
 	printActivationFunctions(column, config->activationFunction);
@@ -146,8 +156,6 @@ void fillList(FILE* fptr, struct menu_template* config_list)
 	while(fread(&param, RECORD_OFFSET, 1, fptr))
 	{
 		config_list->num_of_items++;
-		
-		
 		
         struct menu_item **tmp = realloc(
             config_list->items,
